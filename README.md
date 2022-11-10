@@ -1,3 +1,28 @@
-# hw04_tests
+# yatube_project
 
-[![CI](https://github.com/yandex-praktikum/hw04_tests/actions/workflows/python-app.yml/badge.svg?branch=master)](https://github.com/yandex-praktikum/hw04_tests/actions/workflows/python-app.yml)
+### Описание
+
+Самая перспективная социальная сеть для блогеров в рунете
+
+### Технологии
+
+- _Python 3.10_
+- _Django 2.2.19_
+
+### Запуск проекта в DEV-режиме
+
+- Установите и активируйте виртуальное окружение
+
+- Установите зависимости из requirements.txt
+
+```
+pip install -r requirements.txt
+```
+
+- В папке с файлом manage.py выполните команду:
+
+```
+python manage.py runserver
+```
+### Авторы
+Зарипов Рафаэль
