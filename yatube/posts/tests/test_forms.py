@@ -67,7 +67,7 @@ class PostCreateFormTest(TestCase):
             'text': 'Измененный текст',
             'group': self.group.pk
         }
-        response = self.client.post(
+        self.client.post(
             reverse('posts:post_edit', kwargs=({'post_id': post_pk})),
             data=form_data,
             follow=True,
@@ -81,5 +81,5 @@ class PostCreateFormTest(TestCase):
             Post.objects.filter(
                 pk=post_pk,
                 text=form_data['text']
-            )
+            ).exists()
         )
