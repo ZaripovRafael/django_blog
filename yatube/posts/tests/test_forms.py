@@ -43,7 +43,7 @@ class PostCreateFormTest(TestCase):
             follow=True,
         )
         self.assertTrue(form.is_valid())
-        self.assertEqual(Post.objects.count(), post_count+1)
+        self.assertEqual(Post.objects.count(), post_count + 1)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(
             Post.objects.filter(
@@ -67,14 +67,6 @@ class PostCreateFormTest(TestCase):
             'group': self.group.pk,
         }
         form = PostForm(form_data)
-        response = self.client.post(
-            reverse(
-                'posts:post_edit',
-                args=[self.post.pk]
-            ),
-            data=form_data,
-            follow=True,
-        )
         self.assertTrue(form.is_valid())
         self.assertEqual(Post.objects.count(), posts_count)
         self.assertEqual(
