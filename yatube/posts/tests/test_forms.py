@@ -1,7 +1,12 @@
+from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
 
-from ..models import Post, Group, User
+from ..models import Post, Group
+from ..forms import PostForm
+
+
+User = get_user_model()
 
 
 class PostCreateFormTest(TestCase):
@@ -25,22 +30,28 @@ class PostCreateFormTest(TestCase):
         )
 
     def test_create_post(self):
+        post_count = Post.objects.count()
+
         form_data = {
             'text': 'Test text',
             'group': PostCreateFormTest.group.pk
         }
-
+        form = PostForm(form_data)
         response = self.client.post(
             reverse('posts:post_create'),
             data=form_data,
             follow=True,
         )
-        pos_obj = response.context['page_obj'][0]
-        self.assertEqual(Post.objects.count(), 2)
+        self.assertTrue(form.is_valid())
+        self.assertEqual(Post.objects.count(), post_count+1)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(pos_obj.text, form_data['text'])
-        self.assertEqual(pos_obj.group, PostCreateFormTest.group)
-        self.assertEqual(pos_obj.author, PostCreateFormTest.user)
+        self.assertTrue(
+            Post.objects.filter(
+                text=form_data['text'],
+                group=self.group,
+                author=self.user,
+            ).exists()
+        )
         self.assertRedirects(
             response,
             reverse(
@@ -50,19 +61,23 @@ class PostCreateFormTest(TestCase):
         )
 
     def test_post_edit_save(self):
+        posts_count = Post.objects.count()
         form_data = {
             'text': 'Измененный текст',
             'group': self.group.pk,
         }
+        form = PostForm(form_data)
         response = self.client.post(
             reverse(
                 'posts:post_edit',
-                args=[self.post.pk]),
+                args=[self.post.pk]
+            ),
             data=form_data,
-            follow=True
+            follow=True,
         )
-        post = response.context['post']
-        self.assertEqual(post.text, form_data['text'])
-        self.assertEqual(post.group, self.group)
-        self.assertEqual(post.author, self.post.author)
-        self.assertRedirects(response, f'/posts/{self.post.pk}/')
+        self.assertTrue(form.is_valid())
+        self.assertEqual(Post.objects.count(), posts_count)
+        self.assertEqual(
+            Post.objects.get(pk=self.post.pk).text,
+            form_data['text']
+        )
