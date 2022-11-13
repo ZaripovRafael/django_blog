@@ -73,7 +73,7 @@ class PostCreateFormTest(TestCase):
                 args=[self.post.pk]
             ),
             data=form_data,
-            follow=True
+            follow=True,
         )
         self.assertTrue(form.is_valid())
         self.assertEqual(Post.objects.count(), posts_count)
