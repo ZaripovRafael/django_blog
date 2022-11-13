@@ -19,15 +19,15 @@ class PostCreateFormTest(TestCase):
             description='Тестовое описание'
         )
         cls.user = User.objects.create(username='TestUser')
-
-    def setUp(self) -> None:
-        self.client = Client()
-        self.client.force_login(PostCreateFormTest.user)
-        self.post = Post.objects.create(
+        cls.post = Post.objects.create(
             text='Тестовый пост',
             author=PostCreateFormTest.user,
             group=PostCreateFormTest.group
         )
+
+    def setUp(self) -> None:
+        self.client = Client()
+        self.client.force_login(PostCreateFormTest.user)
 
     def test_create_post(self):
         post_count = Post.objects.count()
@@ -62,14 +62,24 @@ class PostCreateFormTest(TestCase):
 
     def test_post_edit_save(self):
         posts_count = Post.objects.count()
+        post_pk = self.post.pk
         form_data = {
             'text': 'Измененный текст',
-            'group': self.group.pk,
+            'group': self.group.pk
         }
-        form = PostForm(form_data)
-        self.assertTrue(form.is_valid())
+        response = self.client.post(
+            reverse('posts:post_edit', kwargs=({'post_id': post_pk})),
+            data=form_data,
+            follow=True,
+        )
         self.assertEqual(Post.objects.count(), posts_count)
         self.assertEqual(
-            Post.objects.get(pk=self.post.pk).text,
+            Post.objects.get(pk=post_pk).text,
             form_data['text']
+        )
+        self.assertTrue(
+            Post.objects.filter(
+                pk=post_pk,
+                text=form_data['text']
+            )
         )
