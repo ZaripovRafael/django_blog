@@ -5,7 +5,7 @@ class TestURLAbout(TestCase):
 
     def setUp(self) -> None:
         self.client = Client()
-    
+
     def test_about_url(self):
         """Тестируем соответствие шаблонов приложения about"""
 

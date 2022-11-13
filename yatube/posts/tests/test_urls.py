@@ -34,7 +34,7 @@ class PostURLTest(TestCase):
             f'/posts/{cls.post.pk}/': 'posts/post_detail.html',
         }
 
-        cls.PRIVATE_URLS:dict = {
+        cls.PRIVATE_URLS: dict = {
             f'/posts/{cls.post.pk}/edit/': 'posts/create_post.html',
             '/create/': 'posts/create_post.html'
         }
@@ -43,7 +43,6 @@ class PostURLTest(TestCase):
         self.guest_client = Client()
         self.authorized_client_author = Client()
         self.authorized_client_not_author = Client()
-        
         self.authorized_client_author.force_login(PostURLTest.author)
         self.authorized_client_not_author.force_login(PostURLTest.not_author)
 
@@ -63,11 +62,11 @@ class PostURLTest(TestCase):
             response = self.guest_client.get(address, follow=True)
             if address == f'/posts/{post_pk}/edit/':
                 self.assertRedirects(
-                            response,
-                            '/auth/login/?next=/posts/1/edit/',
-                            status_code=HTTPStatus.FOUND,
-                            target_status_code=HTTPStatus.OK
-                        )
+                    response,
+                    '/auth/login/?next=/posts/1/edit/',
+                    status_code=HTTPStatus.FOUND,
+                    target_status_code=HTTPStatus.OK
+                )
             else:
                 self.assertRedirects(
                     response,
@@ -93,9 +92,8 @@ class PostURLTest(TestCase):
 
         guest = self.guest_client.get(address, follow=True)
         author = self.authorized_client_author.get(address)
-        # так как успел сделать кастомную 404 страницу статус код должен быть 200
+        # успел сделать кастомную 404 страницу статус код должен быть 200
         self.assertEqual(guest.status_code, HTTPStatus.OK)
         self.assertEqual(author.status_code, HTTPStatus.OK)
         self.assertTemplateUsed(guest, 'core/404.html')
         self.assertTemplateUsed(author, 'core/404.html')
-

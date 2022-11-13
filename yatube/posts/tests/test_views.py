@@ -48,25 +48,25 @@ class PostsPagesTests(TestCase):
     def test_pages_uses_correct_template(self):
         """URL-адрес использует соответствующий шаблон"""
         template_pages_names = {
-            'posts/index.html': INDEX,
-            'posts/group_list.html': GROUP,
-            'posts/profile.html': PROFILE,
-            'posts/post_detail.html': reverse(
+            INDEX: 'posts/index.html',
+            GROUP: 'posts/group_list.html',
+            PROFILE: 'posts/profile.html',
+            reverse(
                 'posts:post_detail',
                 kwargs={'post_id': PostsPagesTests.post.pk}
-                ),
-            'posts/create_post.html': reverse('posts:post_create'),
-            'posts/create_post.html': reverse(
+            ): 'posts/post_detail.html',
+            reverse('posts:post_create'): 'posts/create_post.html',
+            reverse(
                 'posts:post_edit',
                 kwargs={'post_id': PostsPagesTests.post.pk}
-                )
+            ): 'posts/create_post.html',
         }
 
-        for template, reverse_name in template_pages_names.items():
+        for reverse_name, template in template_pages_names.items():
             with self.subTest(reverse_name=reverse_name):
                 response = self.author.get(reverse_name)
                 self.assertTemplateUsed(response, template)
-    
+
     def test_pages_show_correct_context(self):
         list_of_pages = [INDEX, GROUP, PROFILE]
         for page in list_of_pages:
@@ -110,7 +110,7 @@ class PostsPagesTests(TestCase):
             with self.subTest(value=value):
                 form_field = response.context.get('form').fields.get(value)
                 self.assertIsInstance(form_field, expected)
-    
+
     def post_edit_show_correct_context(self):
         """Cтраница post_edit сформирован с правильным контекстом"""
         response = self.author.get(reverse('posts:post_edit'))
@@ -173,7 +173,7 @@ class PostsPaginatorTests(TestCase):
             INDEX + '?page=2',
             GROUP + '?page=2',
             PROFILE + '?page=2'
-            ]
+        ]
         for name in reverse_names:
             with self.subTest(reverse_name=name):
                 response = self.guest.get(name)

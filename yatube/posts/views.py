@@ -90,7 +90,7 @@ def post_edit(request, post_id):
         request.POST or None,
         files=request.FILES or None,
         instance=post
-        )
+    )
     if post.author.id == request.user.id:
         if not form.is_valid():
             context = {

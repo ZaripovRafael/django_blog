@@ -1,7 +1,7 @@
 from django.test import Client, TestCase
 from django.urls import reverse
 
-from posts.models import Post, Group, User
+from ..models import Post, Group, User
 
 
 class PostCreateFormTest(TestCase):
@@ -45,8 +45,7 @@ class PostCreateFormTest(TestCase):
             response,
             reverse(
                 'posts:profile',
-                kwargs=({'username': PostCreateFormTest.user.username}
-                )
+                kwargs=({'username': PostCreateFormTest.user.username})
             )
         )
 
@@ -67,4 +66,3 @@ class PostCreateFormTest(TestCase):
         self.assertEqual(post.group, self.group)
         self.assertEqual(post.author, self.post.author)
         self.assertRedirects(response, f'/posts/{self.post.pk}/')
-
