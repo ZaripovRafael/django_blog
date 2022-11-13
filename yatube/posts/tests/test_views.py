@@ -109,6 +109,7 @@ class PostsPagesTests(TestCase):
         for value, expected in form_field.items():
             with self.subTest(value=value):
                 form_field = response.context.get('form').fields.get(value)
+                self.assertEqual(response.context['form'].count(), 2)
                 self.assertIsInstance(form_field, expected)
 
     def post_edit_show_correct_context(self):
@@ -127,9 +128,8 @@ class PostsPagesTests(TestCase):
                 form_field = response.context.get('form').fields.get(value)
                 text_field = response.context.get('form').initial[value]
                 self.assertIsInstance(form_field, expected)
-
+                self.assertEqual(response.context['form'].count(), 2)
                 self.assertEqual(text_field, form_values[value])
-
                 self.assertTrue(response.context['is_edit'])
 
 
